@@ -6,6 +6,11 @@ export const useTmdb = () => {
   const loading = useState<boolean>('tmdb_loading', () => false)
   const error = useState<string | null>('tmdb_error', () => null)
 
+
+  const categoryMovies = useState<any[]>('tmdb_category_movies', () => [])
+  const categoryPage = useState<number>('tmdb_category_page', () => 1)
+  const categoryHasMore = useState<boolean>('tmdb_category_has_more', () => true)
+
   // Proxy ke server/api/tmdb
   const fetchTmdb = async (path: string, params = {}) => {
     try {
@@ -41,5 +46,36 @@ export const useTmdb = () => {
     }
   }
 
-  return { genres, popular, latest, loading, error, loadMovies }
+  const loadCategoryMovies = async (categoryId: number, page = 1) => {
+    loading.value = true
+    error.value = null
+
+    try {
+      const res = await fetchTmdb('discover/movie', {
+        language: 'en-US',
+        with_genres: categoryId,
+        page,
+      })
+
+      const newMovies = res?.results ?? []
+
+      if (page === 1) {
+        categoryMovies.value = newMovies
+      } else {
+        categoryMovies.value = [...categoryMovies.value, ...newMovies]
+      }
+
+      categoryPage.value = page
+      categoryHasMore.value = page < (res?.total_pages ?? 1)
+
+    } catch (err: any) {
+      error.value = err.message || 'Failed to load category movies'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return {
+    genres, popular, latest, loading, error, loadMovies, categoryMovies, categoryPage, categoryHasMore, loadCategoryMovies,
+  }
 }
