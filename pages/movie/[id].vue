@@ -60,7 +60,7 @@
       <div v-if="movieDetail">
         <div class="flex flex-row gap-6">
           <img :src="`https://image.tmdb.org/t/p/w500${movieDetail.poster_path}`" :alt="movieDetail.title"
-            class="w-40 sm:w-56 md:w-64 lg:w-72 rounded-xl object-cover shadow-lg" />
+            class="w-40 sm:w-56 md:w-64 rounded-xl object-cover shadow-lg" />
           <div class="flex-col flex">
             <p class="text-sm text-white">{{ movieDetail.release_date?.split('-')[0] }}</p>
             <h1 class="text-xl lg:text-2xl text-white font-medium">
