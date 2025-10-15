@@ -15,7 +15,7 @@ The **Nuxt Movie Explorer** is a movie browsing web application designed to show
 - Fully responsive layout using Tailwind CSS
 - Server-Side Rendering (SSR) support with `useAsyncData`
 
-This project is part of the **Mariworks Frontend Developer Test Case**, focusing on component architecture, composable data fetching, state management, and UI/UX polish.
+This project is part of the **Mariworks Frontend Developer Test Case**, focusing on component architecture, composable data fetching, and UI/UX polish.
 
 ---
 
