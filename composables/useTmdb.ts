@@ -17,6 +17,8 @@ export const useTmdb = () => {
   const movieDetail = useState<any>('tmdb_movie_detail', () => null)
   const movieCast = useState<any[]>('tmdb_movie_cast', () => [])
   const recommended = useState<any[]>('tmdb_movie_recommended', () => [])
+  const loadingDetail = useState<boolean>('tmdb_loading_detail', () => false)
+
 
   // Proxy ke server/api/tmdb
   const fetchTmdb = async (path: string, params = {}) => {
@@ -83,7 +85,7 @@ export const useTmdb = () => {
 
   // 🆕 Load movie detail + cast + recommended
   const loadMovieDetail = async (movieId: number) => {
-    loading.value = true
+    loadingDetail.value = true
     error.value = null
     movieDetail.value = null
     movieCast.value = []
@@ -100,13 +102,13 @@ export const useTmdb = () => {
     } catch (err: any) {
       error.value = err.message || 'Failed to load movie detail'
     } finally {
-      loading.value = false
+      loadingDetail.value = false
     }
   }
 
   return {
     genres, popular, latest, loading, error, loadMovies,
     categoryMovies, categoryPage, categoryHasMore, loadCategoryMovies,
-    movieDetail, movieCast, recommended, loadMovieDetail, categoryName
+    movieDetail, movieCast, recommended, loadMovieDetail, categoryName,loadingDetail
   }
 }

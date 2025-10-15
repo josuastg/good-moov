@@ -8,7 +8,7 @@
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="space-y-6">
+    <div v-if="pending || loadingDetail" class="space-y-6">
       <!-- ✅ Skeleton Loading -->
       <div class="flex flex-col gap-6 animate-pulse">
         <!-- Poster & Info Skeleton -->
@@ -113,10 +113,10 @@ const route = useRoute()
 const router = useRouter()
 const movieId = Number(route.params.id)
 
-const { movieDetail, movieCast, recommended, loading, error, loadMovieDetail } = useTmdb()
+const { movieDetail, movieCast, recommended, loadingDetail, error, loadMovieDetail } = useTmdb()
 
 // SSR-friendly fetch
-await useAsyncData(`movie-detail-${movieId}`, async () => {
+const { pending } = await useAsyncData(`movie-detail-${movieId}`, async () => {
   await loadMovieDetail(movieId)
 })
 
