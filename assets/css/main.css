@@ -27,3 +27,8 @@
 .animate-fadeIn {
   animation: fadeIn 0.25s ease-out forwards;
 }
+
+html, body {
+  font-family: 'Poppins', sans-serif;
+}
+
