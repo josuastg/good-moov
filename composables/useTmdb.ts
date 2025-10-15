@@ -1,15 +1,22 @@
 // composables/useTmdb.ts
 export const useTmdb = () => {
+  // movie genres and list popular/latest
   const genres = useState<any[]>('tmdb_genres', () => [])
   const popular = useState<any[]>('tmdb_popular', () => [])
   const latest = useState<any[]>('tmdb_latest', () => [])
   const loading = useState<boolean>('tmdb_loading', () => false)
   const error = useState<string | null>('tmdb_error', () => null)
 
-
+  // movie category
   const categoryMovies = useState<any[]>('tmdb_category_movies', () => [])
   const categoryPage = useState<number>('tmdb_category_page', () => 1)
   const categoryHasMore = useState<boolean>('tmdb_category_has_more', () => true)
+  const categoryName = useState<string>('tmdb_category_name', () => '')
+
+  // movie detail
+  const movieDetail = useState<any>('tmdb_movie_detail', () => null)
+  const movieCast = useState<any[]>('tmdb_movie_cast', () => [])
+  const recommended = useState<any[]>('tmdb_movie_recommended', () => [])
 
   // Proxy ke server/api/tmdb
   const fetchTmdb = async (path: string, params = {}) => {
@@ -38,7 +45,6 @@ export const useTmdb = () => {
       genres.value = genresRes?.genres ?? []
       popular.value = popularRes?.results ?? []
       latest.value = latestRes?.results ?? []
-      // error.value = 'Failed to load movies';
     } catch (err: any) {
       error.value = err.message || 'Failed to load movies'
     } finally {
@@ -75,7 +81,32 @@ export const useTmdb = () => {
     }
   }
 
+  // 🆕 Load movie detail + cast + recommended
+  const loadMovieDetail = async (movieId: number) => {
+    loading.value = true
+    error.value = null
+    movieDetail.value = null
+    movieCast.value = []
+    recommended.value = []
+    try {
+      const [detailRes, castRes, recommendRes] = await Promise.all([
+        fetchTmdb(`movie/${movieId}`, { language: 'en-US' }),
+        fetchTmdb(`movie/${movieId}/credits`, { language: 'en-US' }),
+        fetchTmdb(`movie/${movieId}/recommendations`, { language: 'en-US', page: 1 }),
+      ])
+      movieDetail.value = detailRes
+      movieCast.value = castRes?.cast ?? []
+      recommended.value = recommendRes?.results ?? []
+    } catch (err: any) {
+      error.value = err.message || 'Failed to load movie detail'
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
-    genres, popular, latest, loading, error, loadMovies, categoryMovies, categoryPage, categoryHasMore, loadCategoryMovies,
+    genres, popular, latest, loading, error, loadMovies,
+    categoryMovies, categoryPage, categoryHasMore, loadCategoryMovies,
+    movieDetail, movieCast, recommended, loadMovieDetail, categoryName
   }
 }

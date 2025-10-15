@@ -18,6 +18,14 @@
       </button>
     </div>
 
+
+    <!-- EMPTY STATE -->
+    <div v-else-if="!loading && (!popular.length || !latest.length)"
+      class="flex flex-col items-center justify-center text-center py-16 text-white">
+      <LucideFilm class="w-12 h-12 mb-3 opacity-60 text-white" />
+      <p class="text-lg  font-medium">No movies found in this pages</p>
+    </div>
+
     <!-- SUCCESS -->
     <div v-else>
       <!-- CATEGORY -->
@@ -43,8 +51,7 @@
 <script setup>
 
 const router = useRouter()
-const { isMobile } = useDevice()
-const { genres, popular, latest, loading, error, loadMovies } = useTmdb()
+const { genres, popular, latest, loading, error, loadMovies, categoryName } = useTmdb()
 
 // ✅ SSR Fetch langsung
 const { pending } = await useAsyncData('home-movies', async () => {
@@ -52,9 +59,13 @@ const { pending } = await useAsyncData('home-movies', async () => {
 })
 
 const goToCategory = (category) => {
+  router.push(`/category/${category.id}`)
+  categoryName.value = category.name
+}
+
+const goToDetail = (movie) => {
   router.push({
-    path: `/category/${category.id}`,
-    query: { name: category.name },
+    path: `/movie/${movie.id}`,
   })
 }
 
